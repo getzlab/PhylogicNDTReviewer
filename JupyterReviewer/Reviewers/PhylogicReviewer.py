@@ -7,7 +7,7 @@ import os
 import re
 import pickle
 
-from JupyterReviewer.ReviewData import ReviewData
+from JupyterReviewer.ReviewDataInterface import ReviewDataInterface
 from JupyterReviewer.Data import DataAnnotation
 from JupyterReviewer.ReviewDataApp import ReviewDataApp, AppComponent
 from JupyterReviewer.ReviewerTemplate import ReviewerTemplate
