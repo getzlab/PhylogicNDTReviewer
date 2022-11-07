@@ -131,7 +131,7 @@ class PhylogicReviewer(ReviewerTemplate):
         self.add_review_data_annotation('Urgency', DataAnnotation('string',
                                                                   options=['Important (broken tree)', 'Minor',
                                                                            'No changes needed']))
-        self.add_review_data_annotation('selected_tree_idx', DataAnnotation('int', default=1))  # options=range(1, tree_num+1) how to access this?
+        self.add_review_data_annotation('selected_tree_idx', DataAnnotation('int'))  # options=range(1, tree_num+1) how to access this?
         self.add_review_data_annotation('selected_tree', DataAnnotation('string'))
         self.add_review_data_annotation('notes', DataAnnotation('string'))
         # 'variant_blocklist': ReviewDataAnnotation(),  # needs to go in separate reviewer
@@ -210,6 +210,7 @@ ANN_DICT = {'F': 'Flat cluster (and consistently in middle)',
             'CN': 'Copy Number related',
             'OS': "OverSplitting (smaller cluster shouldn't have been split from other cluster)",
             'O': 'Other (explain in notes)'}
+
 
 def nice_print_ann(ann_dict):
     each_line = [' - '.join([k, v]) for k, v in ann_dict.items()]
