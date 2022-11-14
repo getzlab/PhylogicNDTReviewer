@@ -4,16 +4,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="JupyterReviewer",
+    name="PhylogicReviewer",
     version="0.0.1",
-    author="Claudia Chu",
-    author_email="cchu@broadinstitute.org",
-    description="A general tool to create dashboards for manual review",
+    author="Conor Messer",
+    author_email="cmesser@broadinstitute.org",
+    description="A tool to review Phylogic solutions using JupyterReviewer Plotly dashboards",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/getzlab/JupyterReviewer",
+    url="https://github.com/getzlab/PhylogicReviewer",
     project_urls={
-        "Bug Tracker": "https://github.com/getzlab/JupyterReviewer/issues",
+        "Bug Tracker": "https://github.com/getzlab/PhylogicReviewer/issues",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -23,23 +23,8 @@ setuptools.setup(
     package_dir={"": "."},
     packages=setuptools.find_packages(where="."),
     python_requires=">=3.6",
-    install_requires = ['dash',
-                        'dash-bootstrap-components',
-                        'fsspec',
-                        'gcsfs',
-                        'google-auth',
-                        'google-api-core',
-                        'hound',
-                        'ipykernel',
-                        'ipython',
-                        'jupyter-dash',
-                        'jupyterlab',
-                        'matplotlib',
-                        'pandas',
-                        'pickleshare',
-                        'pillow',
-                        'pip',
-                        'plotly',
-                        'setuptools']
+    install_requires = ['JupyterReviewer==0.0.2',
+                        'firecloud-dalmatian',
+                       ]
 )   
 
