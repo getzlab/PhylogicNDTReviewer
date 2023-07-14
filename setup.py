@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="PhylogicReviewer",
-    version="0.0.1",
+    version="0.0.3",
     author="Conor Messer",
     author_email="cmesser@broadinstitute.org",
     description="A tool to review Phylogic solutions using JupyterReviewer Plotly dashboards",
@@ -23,7 +23,7 @@ setuptools.setup(
     package_dir={"": "."},
     packages=setuptools.find_packages(where="."),
     python_requires=">=3.6",
-    install_requires = ['JupyterReviewer==0.0.2',
+    install_requires = ['AnnoMate==0.0.2',
                         'firecloud-dalmatian',
                        ]
 )   

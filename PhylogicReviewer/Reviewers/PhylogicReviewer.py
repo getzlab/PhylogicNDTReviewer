@@ -3,19 +3,17 @@ import numpy as np
 from typing import List, Dict
 from dash.dependencies import Output
 from dash import html, dash_table, dcc
-import os
 import re
-import pickle
 
-from JupyterReviewer.ReviewDataInterface import ReviewDataInterface
-from JupyterReviewer.Data import DataAnnotation
-from JupyterReviewer.ReviewDataApp import ReviewDataApp, AppComponent
-from JupyterReviewer.ReviewerTemplate import ReviewerTemplate
-from JupyterReviewer.DataTypes.PatientSampleData import PatientSampleData
+from AnnoMate.Data import DataAnnotation
+from AnnoMate.ReviewDataApp import ReviewDataApp, AppComponent
+from AnnoMate.ReviewerTemplate import ReviewerTemplate
+from AnnoMate.DataTypes.PatientSampleData import PatientSampleData
+from AnnoMate.AnnotationDisplayComponent import NumberAnnotationDisplay, TextAreaAnnotationDisplay, RadioitemAnnotationDisplay, TextAnnotationDisplay
 
-from JupyterReviewer.AppComponents.PhylogicComponents import gen_ccf_pmf_component, gen_phylogic_app_component, gen_cluster_metrics_component
-from JupyterReviewer.AppComponents.MutationTableComponent import gen_mutation_table_app_component
-from JupyterReviewer.AppComponents.CNVPlotComponent import gen_cnv_plot_app_component, gen_preloaded_cnv_plot
+from AnnoMate.AppComponents.PhylogicComponents import gen_ccf_pmf_component, gen_phylogic_app_component, gen_cluster_metrics_component
+from AnnoMate.AppComponents.MutationTableComponent import gen_mutation_table_app_component
+from AnnoMate.AppComponents.CNVPlotComponent import gen_cnv_plot_app_component
 
 
 class PhylogicReviewer(ReviewerTemplate):
@@ -47,12 +45,10 @@ class PhylogicReviewer(ReviewerTemplate):
                  description: str,
                  participant_df: pd.DataFrame,
                  sample_df: pd.DataFrame,
-                 preprocess_data_dir: str,
                  annot_df: pd.DataFrame = None,
                  annot_col_config_dict: Dict = None,
                  history_df: pd.DataFrame = None,
                  index: List = None,
-                 load_figs_mafs=True,
                  ) -> PatientSampleData:
         """
 
@@ -71,8 +67,6 @@ class PhylogicReviewer(ReviewerTemplate):
             Dictionary specifying active annotation columns and validation configurations
         history_df
             Dataframe with previous/prefilled history
-        load_figs_mafs
-            boolean if cnv figures and maf files should be reloaded
 
         Returns
         -------
@@ -82,40 +76,6 @@ class PhylogicReviewer(ReviewerTemplate):
         """
         if index is None:
             index = participant_df.index.tolist()
-
-        # preprocessing todo
-        cnv_figs_dir = os.path.join(preprocess_data_dir, 'cnv_figs')
-        if not os.path.exists(cnv_figs_dir):
-            os.makedirs(cnv_figs_dir)
-            load_figs_mafs = True
-        else:
-            print(f'cnv figs directory already exists: {cnv_figs_dir}')
-
-        maf_dir = os.path.join(preprocess_data_dir, 'maf_df')
-        if not os.path.exists(maf_dir):
-            os.makedirs(maf_dir)
-            load_figs_mafs = True
-        else:
-            print(f'Maf directory already exists: {maf_dir}')
-
-        if load_figs_mafs:
-            participant_list = participant_df.index.tolist()
-
-            sample_cnv_list = []
-            participant_maf_list = []
-            for participant_id in participant_list:
-                sample_cnv_series, participant_maf_series = gen_preloaded_cnv_plot(participant_df, participant_id,
-                                                                                   sample_df, preprocess_data_dir)
-                sample_cnv_list.append(sample_cnv_series)
-                participant_maf_list.append(participant_maf_series)
-
-            sample_cnv_list = pd.concat(sample_cnv_list)
-            participant_maf_list = pd.concat(participant_maf_list)
-
-            participant_df['maf_df_pickle'] = participant_maf_list
-            sample_df['cnv_fig_pickle'] = sample_cnv_list
-        else:
-            pass  # todo get pickle locations
 
         # todo get number of tree options for tree validation; don't think this is possible now
 
@@ -137,20 +97,18 @@ class PhylogicReviewer(ReviewerTemplate):
         # 'variant_blocklist': ReviewDataAnnotation(),  # needs to go in separate reviewer
 
     def set_default_review_data_annotations_app_display(self):
-        self.add_review_data_annotations_app_display('cluster_annotation', 'text')
-        self.add_review_data_annotations_app_display('To-Do', 'text')
-        self.add_review_data_annotations_app_display('Urgency', 'radioitem')
-        self.add_review_data_annotations_app_display('selected_tree_idx', 'number')
-        self.add_review_data_annotations_app_display('selected_tree', 'text')
-        self.add_review_data_annotations_app_display('notes', 'textarea')
+        self.add_annotation_display_component('cluster_annotation', TextAnnotationDisplay())
+        self.add_annotation_display_component('To-Do', TextAnnotationDisplay())
+        self.add_annotation_display_component('Urgency', RadioitemAnnotationDisplay())
+        self.add_annotation_display_component('selected_tree_idx', NumberAnnotationDisplay())
+        self.add_annotation_display_component('selected_tree', TextAnnotationDisplay())
+        self.add_annotation_display_component('notes', TextAreaAnnotationDisplay())
 
-    def gen_review_app(self, preprocess_data_dir, custom_colors=[], drivers_fn=None) -> ReviewDataApp:  #todo change empty list to None
+    def gen_review_app(self, custom_colors=[], drivers_fn=None) -> ReviewDataApp:  #todo change empty list to None
         """Generates a ReviewDataApp object
 
         Parameters
         ----------
-        preprocess_data_dir
-            Directory to store pre-processed data (like cnv pickle files)
         custom_colors
             List of custom colors (for what?)
         drivers_fn
@@ -187,7 +145,7 @@ class PhylogicReviewer(ReviewerTemplate):
                                                         Output('sample-datatable', 'columns')],
                                        new_data_callback=get_sample_data_table))
 
-        app.add_component(gen_cnv_plot_app_component(), preprocess_data_dir=preprocess_data_dir)
+        app.add_component(gen_cnv_plot_app_component())
         app.add_component(gen_ccf_pmf_component())
 
         return app
