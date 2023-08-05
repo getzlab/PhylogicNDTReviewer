@@ -1,3 +1,6 @@
+"""
+Standard reviewer for PhylogicNDT (Leshchiner 2018) results. Displays a mutation table that can be filtered and sorted, PhylogicNDT CCF trajectories and candidate clonal trees, general metrics per PhylogicNDT clusters, and copy number plots with currently selected mutations displayed.
+"""
 import pandas as pd
 import numpy as np
 from typing import List, Dict
