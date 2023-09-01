@@ -11,13 +11,13 @@ from AnnoMate.ReviewerTemplate import ReviewerTemplate
 from AnnoMate.DataTypes.PatientSampleData import PatientSampleData
 from AnnoMate.AnnotationDisplayComponent import NumberAnnotationDisplay, TextAreaAnnotationDisplay, RadioitemAnnotationDisplay, TextAnnotationDisplay
 
-from AnnoMate.AppComponents.PhylogicComponents import gen_ccf_pmf_component, gen_phylogic_app_component, gen_cluster_metrics_component
+from AnnoMate.AppComponents.PhylogicNDTComponents import gen_ccf_pmf_component, gen_phylogicNDT_app_component, gen_cluster_metrics_component
 from AnnoMate.AppComponents.MutationTableComponent import gen_mutation_table_app_component
 from AnnoMate.AppComponents.CNVPlotComponent import gen_cnv_plot_app_component
 
 
-class PhylogicReviewer(ReviewerTemplate):
-    """Class to facilitate reviewing Phylogic results in a consistent and efficient manner.
+class PhylogicNDTReviewer(ReviewerTemplate):
+    """Class to facilitate reviewing PhylogicNDT results in a consistent and efficient manner.
 
     Notes
     -----
@@ -25,7 +25,7 @@ class PhylogicReviewer(ReviewerTemplate):
     - Display mutations (pull code from Patient Reviewer)
     - Display trees (pull code from Patient Reviewer?)
         - Work on weighted tree viz
-    - Display CN plots (pull code from old phylogic review code, with updated library use)**
+    - Display CN plots (pull code from old PhylogicNDT review code, with updated library use)**
          - Display mutations on CN plots
          - Allow filtering using mutations table
     - Metrics for coding vs. non_coding, silent vs. non_syn (coding), indels vs. SNPs summarized for each cluster**
@@ -71,7 +71,7 @@ class PhylogicReviewer(ReviewerTemplate):
         Returns
         -------
         PatientSampleData
-            A `Data` object for phylogic review and annotation history
+            A `Data` object for PhylogicNDT review and annotation history
 
         """
         if index is None:
@@ -104,7 +104,27 @@ class PhylogicReviewer(ReviewerTemplate):
         self.add_annotation_display_component('selected_tree', TextAnnotationDisplay())
         self.add_annotation_display_component('notes', TextAreaAnnotationDisplay())
 
-    def gen_review_app(self, custom_colors=[], drivers_fn=None) -> ReviewDataApp:  #todo change empty list to None
+    def gen_review_app(
+        self, 
+        custom_colors=None, 
+        drivers_fn=None,
+        default_maf_sample_cols=[
+            't_ref_count',
+            't_alt_count',
+            'n_ref_count',
+            'n_alt_count',
+        ],
+        maf_hugo_col='Hugo_Symbol',
+        maf_chromosome_col='Chromosome',
+        maf_start_pos_col='Start_position',
+        maf_end_pos_col='End_position',
+        maf_protein_change_col='Protein_change',
+        maf_variant_class_col='Variant_Classification',
+        maf_cluster_col='Cluster_Assignment',
+        maf_sample_id_col='Sample_ID',
+        maf_participant_id_col='Patient_ID',
+        maf_variant_type_col='Variant_Type'
+    ) -> ReviewDataApp:  #todo change empty list to None
         """Generates a ReviewDataApp object
 
         Parameters
@@ -113,6 +133,28 @@ class PhylogicReviewer(ReviewerTemplate):
             List of custom colors (for what?)
         drivers_fn
             Path and filename for driver genes; should be single column with no header
+        default_maf_sample_cols
+            List of default columns to be displayed on the sample side of the mutation table 
+        maf_hugo_col
+            Name of the hugo symbol column in the maf file 
+        maf_chromosome_col
+            Name of the chromosome column in the maf file 
+        maf_start_pos_col
+            Name of the start position column in the maf file 
+        maf_end_pos_col
+            Name of the end position column in the maf file 
+        maf_protein_change_col
+            Name of the protein change column in the maf file 
+        maf_variant_class_col
+            Name of the variant classification column in the maf file 
+        maf_cluster_col
+            Name of the cluster assignment column in the maf file 
+        maf_sample_id_col
+            Name of the sample id column in the maf file 
+        maf_participant_id_col
+            Name of the participant id column in the maf file 
+        maf_variant_type_col
+            Name of the variant type column in the maf file 
 
         Returns
         -------
@@ -126,9 +168,34 @@ class PhylogicReviewer(ReviewerTemplate):
                                                         '(eg: 3-F,S;4-CL,SI;5-O)'),
                                                  html.P('Use only the following annotations:'),
                                                  dcc.Markdown(nice_print_ann(ANN_DICT))])))
-        app.add_component(gen_phylogic_app_component(), drivers_fn=drivers_fn)
-        app.add_component(gen_cluster_metrics_component())
-        app.add_component(gen_mutation_table_app_component(), custom_colors=custom_colors)
+        app.add_component(
+            gen_phylogicNDT_app_component(), 
+            drivers_fn=drivers_fn,
+            maf_participant_id_col=maf_participant_id_col,
+            maf_hugo_col=maf_hugo_col,
+            maf_chromosome_col=maf_chromosome_col,
+            maf_start_pos_col=maf_start_pos_col,
+            maf_cluster_col=maf_cluster_col
+        )
+        app.add_component(
+            gen_cluster_metrics_component(),
+            maf_variant_type_col=maf_variant_type_col,
+            maf_variant_class_col=maf_variant_class_col,
+            maf_cluster_col=maf_cluster_col
+        )
+        app.add_component(
+            gen_mutation_table_app_component(), 
+            custom_colors=custom_colors,
+            default_maf_sample_cols=default_maf_sample_cols, 
+            maf_hugo_col=maf_hugo_col, 
+            maf_chromosome_col=maf_chromosome_col, 
+            maf_start_pos_col=maf_start_pos_col, 
+            maf_end_pos_col=maf_end_pos_col, 
+            maf_protein_change_col=maf_protein_change_col, 
+            maf_variant_class_col=maf_variant_class_col, 
+            maf_cluster_col=maf_cluster_col, 
+            maf_sample_id_col=maf_sample_id_col
+        )
 
         def get_sample_data_table(data: PatientSampleData, idx):
             """Clinical and sample data callback function"""
@@ -145,8 +212,24 @@ class PhylogicReviewer(ReviewerTemplate):
                                                         Output('sample-datatable', 'columns')],
                                        new_data_callback=get_sample_data_table))
 
-        app.add_component(gen_cnv_plot_app_component())
-        app.add_component(gen_ccf_pmf_component())
+        app.add_component(
+            gen_cnv_plot_app_component(),
+            maf_sample_id_col=maf_sample_id_col,
+            maf_start_pos_col=maf_start_pos_col,
+            maf_chromosome_col=maf_chromosome_col, 
+            maf_cluster_col=maf_cluster_col,
+            maf_hugo_col=maf_hugo_col,
+            maf_variant_class_col=maf_variant_class_col,
+            maf_protein_change_col=maf_protein_change_col
+        )
+        app.add_component(
+            gen_ccf_pmf_component(),
+            maf_sample_id_col=maf_sample_id_col,
+            maf_cluster_col=maf_cluster_col,
+            maf_hugo_col=maf_hugo_col,
+            maf_chromosome_col=maf_chromosome_col,
+            maf_start_pos_col=maf_start_pos_col,
+        )
 
         return app
 
