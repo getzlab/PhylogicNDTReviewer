@@ -61,6 +61,30 @@ See `PhylogicNDTReviewer/DataTypes` to see pre-built data configurations for Phy
 - selected_tree: edge relationships of tree; currently needs to be input manually but can be made automatic
 - notes: general text field for other notes
 
+# Review with PhylogicNDTReviewer
+
+## Why is this type of review important 
+The PhylogicNDT suite of tools models phylogenetic and evolutionary trajectories, clonal dynamics, and subclonal relationships within multiple samples of a single cancer patient to allow for a better understanding of the cancer's progression over time. This is a tool that is run further downstream in the analysis process, meaning that if errors were made or overlooked in upstream tools, they will propagate to PhylogicNDT, causing results to be inaccurate. Because of this, PhylogicNDT Clustering and BuildTree results must be closely reviewed, checking for any such errors. It is important that PhylogicNDT results are clear and correct in order to make meaningful analyses of the data. 
+
+## How is this review conducted 
+
+### Pre-reviewer use: Pipelines and tools run before PhylogicNDT results can be reviewed
+As PhylogicNDT is one of the last steps in the analysis process, there are a few upstream tools to be run and reviews to be made before PhylogicNDT can be run and reviewed. 
+1. Run the WES Characterization Pipeline: This pipeline runs many different tools, one of which is ABSOLUTE. ABSOLUTE suggests purities and ploidies for each sample, which are necessary for running PhylogicNDT. 
+2. Review purities: It is important that the purities are reviewed before running PhylogicNDT. This can be done manually or by using the PurityReviewer, another pre-made AnnoMate Reviewer. 
+3. Run Pre-Phylogic workflows: These workflows include make_forcecall_intervalls, forcecall_snps_indels, and abs_seg_forcecall.
+4. Mark non-coding mutations in a blacklist.
+5. Review remaining mutations: These can be reviewed using cga_itools or MutationReviewer to examine the mutations in IGV and added to the blacklist if necessary. 
+6. Run PhylogicNDT using the blacklist created in previous steps. 
+
+PhylogicNDT initially outputs an HTML report containing various graphs and plots, some of which are included in the PhylogicNDTReviewer. This report should always be looked at before the PhylogicNDTReviewer is used. Since the main goal of this reviewer is to determine where possible errors in the PhylogicNDT results may be coming from, it will likely only be used when you’ve looked at the HTML report and seen something that doesn’t look right. 
+
+### Using the reviewer: How to use the reviewer, what to look for, tips and tricks
+Once you have all the information you need to review the clustering results, you can run the PhylogicNDTReviewer following the instructions in the README to launch the PhylogicNDTReviewer dashboard. Since at this stage you have already looked at the HTML report, you likely have an idea of what might be wrong with the results / where to first look for issues. If you think inappropriate purity may have been called, you can look at the copy number plot and purity. If you think the issue may have to do with mutations, you can look at the mutation table. In addition, it could also be helpful to pull up the MutationReviewer, another pre-made AnnoMate Reviewer, in parallel to look at the mutations in IGV. The Mutation Types by Cluster and CCF pmf plots are also helpful in seeing any immediate red flags if there are an overwhelming number of a certain mutation type or an odd distribution of mutations in a specific cluster. Any findings here can be marked in the annotations section. 
+
+## Next steps after review: Now that review has been conducted, what is done with the information found 
+Typically if there are issues found and annotated for a given participant, they will be addressed immediately after the review of that patient (rather than annotating all patients and then going back). The next steps after each participant depend on what issues were found. If the copy number profile looks really wrong, next steps would include backtracking in the pipeline and seeing if there were any mistakes in purity or other ABSOLUTE results / annotations. You also may want to look further into the data itself for any possible artifacts. Once you think you have solved the issue, you will then run PhylogicNDT again and re-review, iterating until the PhylogicNDT report looks accurate. Once this is the case, you can move onto the next participant until all participants have been reviewed. At this point, your clean PhylogicNDT results can be used as a tool to find trends that might explain something about the development of a certain type of cancer or its resistance to treatment.  
+
 # Custom and advanced usage
 
 See `PhylogicNDTReviewer/AppComponents` for pre-built components and their customizable parameters, and additional utility functions. 
