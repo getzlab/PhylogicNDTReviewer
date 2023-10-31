@@ -85,9 +85,6 @@ Once you have all the information you need to review the clustering results, you
 ## Next steps after review: Now that review has been conducted, what is done with the information found 
 Typically if there are issues found and annotated for a given participant, they will be addressed immediately after the review of that patient (rather than annotating all patients and then going back). The next steps after each participant depend on what issues were found. If the copy number profile looks really wrong, next steps would include backtracking in the pipeline and seeing if there were any mistakes in purity or other ABSOLUTE results / annotations. You also may want to look further into the data itself for any possible artifacts. Once you think you have solved the issue, you will then run PhylogicNDT again and re-review, iterating until the PhylogicNDT report looks accurate. Once this is the case, you can move onto the next participant until all participants have been reviewed. At this point, your clean PhylogicNDT results can be used as a tool to find trends that might explain something about the development of a certain type of cancer or its resistance to treatment.  
 
-## Citations
-Phylogic: Ignaty Leshchiner, Dimitri Livitz, Justin F. Gainor, Daniel Rosebrock, Oliver Spiro, Aina Martinez, Edmund Mroz, Jessica J. Lin, Chip Stewart, Jaegil Kim, Liudmila Elagina, Mari Mino-Kenudson, Marguerite Rooney, Sai-Hong Ignatius Ou, Catherine J. Wu, James W. Rocco, Jeffrey A. Engelman, Alice T. Shaw, Gad Getz
-bioRxiv 508127; doi: https://doi.org/10.1101/508127
 
 # Custom and advanced usage
 
@@ -107,3 +104,7 @@ The clustering in PhylogicNDT can be very fickle, especially in WES samples, and
 # Future Development
 - It would be advantageous to connect this reviewer with the MutationReviewer (passing a list of mutations directly to review with IGV)
 - Add buttons to automatically re-run PhylogicNDT with annotated mutations/clusters removed
+
+# References
+Phylogic: Ignaty Leshchiner, Dimitri Livitz, Justin F. Gainor, Daniel Rosebrock, Oliver Spiro, Aina Martinez, Edmund Mroz, Jessica J. Lin, Chip Stewart, Jaegil Kim, Liudmila Elagina, Mari Mino-Kenudson, Marguerite Rooney, Sai-Hong Ignatius Ou, Catherine J. Wu, James W. Rocco, Jeffrey A. Engelman, Alice T. Shaw, Gad Getz
+bioRxiv 508127; doi: https://doi.org/10.1101/508127
