@@ -55,7 +55,7 @@ See `PhylogicNDTReviewer/DataTypes` to see pre-built data configurations for Phy
 
 # Review with PhylogicNDTReviewer
 
-## What is PhylogicNDT^1 used for?
+## What is PhylogicNDT^1^ used for?
 The PhylogicNDT suite of tools models phylogenetic and evolutionary trajectories, clonal dynamics, and subclonal relationships within multiple samples of a single cancer patient to allow for a better understanding of the cancer's progression over time. PhylogicNDT can be used to determine the clonality of different potential driver mutations, track the growth rate of clones over time (when tumor abundance information is known), and even come up with the relative timing of different events across a cohort. All these findings are useful for better understanding the progression of cancer subtypes and their response to treatment.
 
 ## Why is review important?
@@ -67,7 +67,7 @@ The goal of the PhylogicNDT manual review process is not to correctly cluster ev
 As PhylogicNDT is one of the last steps in the analysis process, there are a few upstream tools to be run and reviews to be performed before PhylogicNDT can be run. 
 1. Get variant, copy number (CN), and purity/ploidy calls for each sample (i.e. by running the [CGA Characterization Pipeline](https://github.com/broadinstitute/CGA_Production_Analysis_Pipeline)).
 2. Review purity/ploidy calls manually or using the PurityReviewer.
-3. Run [Pre-Phylogic workflows](https://github.com/getzlab/prePhylogic_TOOL), forcecalling union mutations and re-running ABSOLUTE^2.
+3. Run [Pre-Phylogic workflows](https://github.com/getzlab/prePhylogic_TOOL), forcecalling union mutations and re-running ABSOLUTE^2^.
 4. Review mutations using cga_itools or MutationReviewer and add artifacts to blacklist. In some cases (e.g. for Whole Genome Samples or high tumor mutational burden cancer types), reviewing all the mutations is infeasible. If so, it is okay to skip this step, knowing that more clustering artifacts are likely to originate from artifact mutations.
 5. Run PhylogicNDT using data generated above.
 	- ./PhylogicNDT.py Cluster -i Patient_ID -sif Patient.sif --artifact_blacklist blacklist.txt --run_with_BuildTree
