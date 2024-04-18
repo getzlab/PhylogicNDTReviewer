@@ -4,16 +4,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="PhylogicReviewer",
+    name="PhylogicNDTReviewer",
     version="0.0.3",
     author="Conor Messer",
     author_email="cmesser@broadinstitute.org",
-    description="A tool to review Phylogic solutions using JupyterReviewer Plotly dashboards",
+    description="A tool to review PhylogicNDT solutions using JupyterReviewer Plotly dashboards",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/getzlab/PhylogicReviewer",
+    url="https://github.com/getzlab/PhylogicNDTReviewer",
     project_urls={
-        "Bug Tracker": "https://github.com/getzlab/PhylogicReviewer/issues",
+        "Bug Tracker": "https://github.com/getzlab/PhylogicNDTReviewer/issues",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
